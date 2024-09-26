@@ -52,4 +52,34 @@ ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) +
   geom_point(aes(color = name), alpha = .3, size = .8)
 geom_smooth(se = FALSE)
 ```
+Use faceting; three different panels by each name
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name)
+```
+
+interesting scatterplot 
+```{r}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name, size = prcp)) +
+  geom_point( alpha = .3) + 
+  geom_smooth(se = FALSE)
+  facet_grid(. ~ name)
+```
+
+Learning assessment 
+```{r}
+weather_df |>
+  filter(name == "CentralPark_NY") |>
+  mutate(
+    tmax_fahr = tmax * (9 / 5) + 32,
+    tmin_fahr = tmin * (9 / 5) + 32
+  ) |>
+  ggplot(aes(x = tmin_fahr, y = tmax_fahr)) +
+  geom_point()
+geom_smooth(method = "lm", se = FALSE)
+```
 
