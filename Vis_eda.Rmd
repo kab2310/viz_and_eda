@@ -1,5 +1,5 @@
 ---
-  title: "Visualization and EDA"
+title: "Visualization and EDA"
 author: "Kamiah Brown"
 date: "2024-09-26"
 output: github_document
@@ -36,7 +36,7 @@ ggplot(weather_df, aes(x = tmin, y = tmax)) +
 
 ```{r}
 weather_df |>
-  ggplot(aes(x = tmin, y = tmaxx)) +
+  ggplot(aes(x = tmin, y = tmax)) +
   geom_point()
 ```
 
@@ -81,5 +81,107 @@ weather_df |>
   ggplot(aes(x = tmin_fahr, y = tmax_fahr)) +
   geom_point()
 geom_smooth(method = "lm", se = FALSE)
+```
+
+Small things 
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = .3, size =.8) +
+  geom_smooth(se = FALSE) 
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point( color = "blue")
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = "blue")) +
+  geom_point()
+```
+
+If something is a variable name, it doesn't need to be in quotes. If it is not a variable name then it is not a variable name. 
+
+##Univeraite plots 
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+```
+
+Use fill to fill in the histogram 
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram()
+facet_grid(. ~ name)
+```
+
+density plot 
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha = .3)
+```
+Box plots
+```{r}
+weather_df |>
+  ggplot(aes(x = name, y = tmin, fill = name)) +
+geom_boxplot()
+```
+Violin plots
+```{r}
+weather_df |>
+  ggplot(aes(x = name, y = tmin, fill = name)) +
+  geom_violin()
+```
+Ridge plots 
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = name)) +
+  geom_density_ridges()
+```
+
+Learning assessment comparing prepipation across locations
+```{r}
+weather_df |>
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = 3)
+
+weather_df |>
+  ggplot(aes(x = name, y = prcp)) +
+  geom_boxplot()
+
+weather_df |>
+  filter(prcp > 10, prcp < 1000) |>
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = .3)
+```
+
+## Saving and embedding plots 
+```{r}
+ggp_weather =
+  weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point()
+
+ggsave("ggp_weather.pdf", ggp_weather, width = 8, height = 6)
+```
+
+Embedding plots 
+```{r, fig.width = 6, fig,asp = .6}
+  weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point()
 ```
 
