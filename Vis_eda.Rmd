@@ -185,3 +185,54 @@ Embedding plots
   geom_point()
 ```
 
+
+Make a scatterplot
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+labs(
+  title = "Temperature scatterplot",
+  x = "Minimum Temp (C)",
+  y = "Maximum Temp (C)",
+  color = "Location",
+  caption = "Weather data taken fron rnoaa package for three stations."
+)
+```
+
+Scales --
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+labs(
+  title = "Temperature scatterplot",
+  x = "Minimum Temp (C)",
+  y = "Maximum Temp (C)",
+  color = "Location",
+  caption = "Weather data taken fron rnoaa package for three stations."
+  ) + 
+  scale_x_continuous(
+    breaks = c(-15, 0, 20),
+    labels = c("-15C", "0", "20")
+  ) + 
+  scale_y_continuous(
+    limits = c(0, 30), 
+    transform = "sqrt"
+  )
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+labs(
+  title = "Temperature scatterplot",
+  x = "Minimum Temp (C)",
+  y = "Maximum Temp (C)",
+  color = "Location",
+  caption = "Weather data taken fron rnoaa package for three stations."
+) 
+viridis::scale_color_viridis(discrete = TRUE)
+```
+
