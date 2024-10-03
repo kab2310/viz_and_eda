@@ -428,3 +428,161 @@ Embedding plots
     ## (`geom_point()`).
 
 ![](Vis_eda_files/figure-gfm/fig-1.png)<!-- -->
+
+Make a scatterplot
+
+``` r
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Vis_eda_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+``` r
+labs(
+  title = "Temperature scatterplot",
+  x = "Minimum Temp (C)",
+  y = "Maximum Temp (C)",
+  color = "Location",
+  caption = "Weather data taken fron rnoaa package for three stations."
+)
+```
+
+    ## $x
+    ## [1] "Minimum Temp (C)"
+    ## 
+    ## $y
+    ## [1] "Maximum Temp (C)"
+    ## 
+    ## $colour
+    ## [1] "Location"
+    ## 
+    ## $title
+    ## [1] "Temperature scatterplot"
+    ## 
+    ## $caption
+    ## [1] "Weather data taken fron rnoaa package for three stations."
+    ## 
+    ## attr(,"class")
+    ## [1] "labels"
+
+Scales –
+
+``` r
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Vis_eda_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+``` r
+labs(
+  title = "Temperature scatterplot",
+  x = "Minimum Temp (C)",
+  y = "Maximum Temp (C)",
+  color = "Location",
+  caption = "Weather data taken fron rnoaa package for three stations."
+  ) + 
+  scale_x_continuous(
+    breaks = c(-15, 0, 20),
+    labels = c("-15C", "0", "20")
+  ) + 
+  scale_y_continuous(
+    limits = c(0, 30), 
+    transform = "sqrt"
+  )
+```
+
+    ## NULL
+
+``` r
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Vis_eda_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+``` r
+labs(
+  title = "Temperature scatterplot",
+  x = "Minimum Temp (C)",
+  y = "Maximum Temp (C)",
+  color = "Location",
+  caption = "Weather data taken fron rnoaa package for three stations."
+) 
+```
+
+    ## $x
+    ## [1] "Minimum Temp (C)"
+    ## 
+    ## $y
+    ## [1] "Maximum Temp (C)"
+    ## 
+    ## $colour
+    ## [1] "Location"
+    ## 
+    ## $title
+    ## [1] "Temperature scatterplot"
+    ## 
+    ## $caption
+    ## [1] "Weather data taken fron rnoaa package for three stations."
+    ## 
+    ## attr(,"class")
+    ## [1] "labels"
+
+``` r
+viridis::scale_color_viridis(discrete = TRUE)
+```
+
+    ## <ggproto object: Class ScaleDiscrete, Scale, gg>
+    ##     aesthetics: colour
+    ##     axis_order: function
+    ##     break_info: function
+    ##     break_positions: function
+    ##     breaks: waiver
+    ##     call: call
+    ##     clone: function
+    ##     dimension: function
+    ##     drop: TRUE
+    ##     expand: waiver
+    ##     get_breaks: function
+    ##     get_breaks_minor: function
+    ##     get_labels: function
+    ##     get_limits: function
+    ##     get_transformation: function
+    ##     guide: legend
+    ##     is_discrete: function
+    ##     is_empty: function
+    ##     labels: waiver
+    ##     limits: NULL
+    ##     make_sec_title: function
+    ##     make_title: function
+    ##     map: function
+    ##     map_df: function
+    ##     n.breaks.cache: NULL
+    ##     na.translate: TRUE
+    ##     na.value: NA
+    ##     name: waiver
+    ##     palette: function
+    ##     palette.cache: NULL
+    ##     position: left
+    ##     range: environment
+    ##     rescale: function
+    ##     reset: function
+    ##     train: function
+    ##     train_df: function
+    ##     transform: function
+    ##     transform_df: function
+    ##     super:  <ggproto object: Class ScaleDiscrete, Scale, gg>

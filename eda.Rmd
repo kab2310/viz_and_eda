@@ -7,6 +7,7 @@ output: github_document
 ```{r}
 library(tidyverse)
 library(ggridges)
+library(haven)
 ```
  
 
@@ -233,6 +234,243 @@ labs(
   color = "Location",
   caption = "Weather data taken fron rnoaa package for three stations."
 ) 
-viridis::scale_color_viridis(discrete = TRUE)
+viridis::scale_color_viridis(discrete = TRUE) + 
+  theme(legend.position = "bottom") +
+  theme_bw()
 ```
+
+
+#Themes
+```{r}
+gg_scatterplot +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+ggp_scatterplot + 
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+ggp_scatterplot + 
+  theme(legend,postion = "bottom")
+  theme_minimal()
+```
+
+```{r}
+gg_scatterplot +
+  theme(legend.positon)
+```
+
+```{r}
+
+```
+
+
+Learning Assessment 
+```{r}
+weather_df  |>
+  ggplot(aes( x = date, y = tmax, color = name, size = prcp)) +
+  geom_point(alpha = .3) +
+  geom_smooth(se = FALSE) + 
+       viridis::scale_color_viridis(discrete = TRUE) +
+       labs( 
+         x = "Date",
+         y = "Maximum Temp (C)",
+         title = "Seasonal variaiton in Max Temp"
+         ) + 
+         theme_minimal() + 
+         theme(legend.position = "bottom")
+```
+
+
+
+Extra bonus stuff in 'ggplot' 
+Use different datasets in different 'geom's
+```{r}
+central_park_df = 
+  weather_df |> 
+  filter(name == "CentralPark_NY")
+
+molokai_df = 
+weather_df |>
+  filter(name == "Molokai_HI")
+
+molokai_df |> 
+  ggplot(aes(x = date, y = tmax, color = name)) + 
+  geom_point() + 
+  geom_line(data = central_park_df)
+```
+
+#Multiple panels
+```{r}
+weather_df |>
+  ggplot(aes(x = tmax, fill = name)) +
+  geom_density() +
+  facet_grid(. ~ name)
+```
+
+```{r}
+ggp_tmax_tmin = 
+  weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .3)
+
+ggp_tmax_density = 
+  weather_df |>
+  ggplot(aes(x = timax, fill = name)) +
+  geom_density(alpha = .3)
+
+ggp_tmax_date =
+  weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point()
+geom_smooth(se = FALSE)
+```
+
+#Data maniupulation 
+```{r}
+weather_df |>
+  mutate(name = fct_relevel(name, c("Molokai_HI", "CentralPark_NY", 
+                                    "Waterhole_WA"))) |>
+  ggplot(aes(x = name, y = tmax, fill = name)) + 
+  geom_violin(alpha = .5)
+```
+Pulse data
+```{r}
+pulse_data = 
+ read_sas("/data/public_pulse_data.sas7bdat") |>
+  janitor::clean_names() |>
+  pivot_longer(
+    cols = bdi_score_bl:bdi_score_12m,
+    names_to = "visit", 
+    values_to = "bdi_score", 
+    names_prefix_ = "bdi_score_"
+  )|>
+  
+  ggplot(pulse_data, aes(x = visit, y = bdi)) + 
+  geom_boxplot()
+```
+
+
+Make an FAS plot 
+```{r}
+litters_df = 
+  read_csv("FAS_litters.csv", na = c("NA", "." "")) |>
+  janitor::clean_names() |>
+  separate(group, into = c("dose", "tx_day"), 3)
+
+pups_df = 
+  read_csv("FAS_pups.csv", na =c("NA", "." "")) |>
+  janitor::clean_names() |>
+  
+  
+```
+
+```{r}
+weather_df |>
+  filter(name == "CentralPark_NY") |>
+  mutate(
+    tmax_fahr = tmax * (9 / 5) + 32,
+    tmin_fahr = tmin * (9 / 5) + 32
+  ) |>
+  ggplot(aes(x = tmin_fahr, y = tmax_fahr)) +
+  geom_point()
+geom_smooth(method = "lm", se = FALSE)
+```
+
+
+```{r}
+weather_df |>
+  ggplot(aes(x = prcp))
+geom_histogram()
+```
+
+```{r}
+weather_df |>
+  filter(prcp > 1000)
+```
+
+```{r}
+weather_df |>
+  filter()
+ggplot(aes(x = tmin, y = tmax, color = name, sjape = name)) +
+  geom_point()
+```
+
+### Group_by
+missing month data. 
+```{r}
+weather_df |>
+  group_by (name)
+```
+
+
+#counting stuff 
+```{r}
+weather_df |> 
+  group_by (name) |>
+  summarize(n_obs = n(), 
+            n_dist = n_distinct(name))
+```
+
+#2x2
+
+```{r}
+weather_df |>
+  drop_na(tmax) |>
+  filter( name != "Molokai_HI") |>
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not_cold"
+    )
+  ) |> 
+  group_by(name, cold) |>
+  summarize(count = n())
+```
+
+```{r}
+weather_df |>
+  drop_na(tmax) |>
+  filter( name != "Molokai_HI") |>
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not_cold"
+    )
+  ) |> 
+    janitor::tabyl(name, cold)
+```
+
+## generic numeric summaries
+ lets try some other useful summaries 
+ 
+```{r}
+weather_df |>
+  group_by(name) |>
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    median_tmin = median(tmin, na.rm = TRUE),
+    sd_prcp = sd(prcp, na.rm = TRUE)
+  )
+```
+
+summarize and then plot 
+```{r}
+weather_df |>
+  group_by(name) |>
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    median_tmin = median(tmin, na.rm = TRUE),
+    sd_prcp = sd(prcp, na.rm = TRUE)
+  )
+
+#Missing month.
+ggplot(aes(x = month, y = mean_tmax, color = name)) +
+  geom_point() +
+  geom_line()
+```
+
 
